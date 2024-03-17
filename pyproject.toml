@@ -2,7 +2,7 @@
 package-mode = false
 name = "customer-trends"
 version = "0.1.0"
-description = "Customer behaviour trends"
+description = "Application reveals trends in customer behaviour for decision making"
 authors = ["Ivan Rublev <ivan@ivanrublev.me>"]
 license = "MIT"
 readme = "README.md"

@@ -29,7 +29,7 @@ postgres_down:
 	docker-compose -f docker-compose-postgres.yml down
 
 docker_up:
-	docker build -t customer-behaviour . && docker run -d -e AUTH_TOKEN=$${AUTH_TOKEN} -e DATABASE_URL=postgresql://postgres:postgres@host.docker.internal:5432/exam_depository_dev -e PORT=$${PORT} -p $${PORT}:$${PORT} customer-behaviour
+	docker build -t customer-trends . && docker run -d -e AUTH_TOKEN=$${AUTH_TOKEN} -e DATABASE_URL=postgresql://postgres:postgres@host.docker.internal:5432/exam_depository_dev -e PORT=$${PORT} -p $${PORT}:$${PORT} customer-trends
 
 docker_down:
-	docker ps -a -q --filter ancestor=customer-behaviour | xargs -I {} sh -c 'docker stop {} && docker rm {}'
+	docker ps -a -q --filter ancestor=customer-trends | xargs -I {} sh -c 'docker stop {} && docker rm {}'

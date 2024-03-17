@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for customer-behaviour on 2024-03-15T15:21:11+01:00
+# fly.toml app configuration file generated for customer-trends on 2024-03-15T15:21:11+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'customer-behaviour'
+app = 'customer-trends'
 primary_region = 'ams'
 kill_signal = 'SIGTERM'
 kill_timeout = '5s'
@@ -18,7 +18,7 @@ kill_timeout = '5s'
   wait_timeout = '10m0s'
 
 [env]
-  HOST = 'customer-behaviour.fly.dev'
+  HOST = 'customer-trends.fly.dev'
   PORT = '8080'
 
 [http_service]
