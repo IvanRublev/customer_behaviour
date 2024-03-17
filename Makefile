@@ -9,8 +9,8 @@ lint:
 shell:
 	poetry run python
 
-server:
-	poetry run python app.py
+streamlit:
+	poetry run streamlit run app.py
 
 test:
 	export DATABASE_URL=$${DATABASE_URL}_test; \

@@ -1,6 +1,5 @@
-#from src.settings import Settings
-
+# from src.settings import Settings
+from src.pokemon import pokemon_app
 
 if __name__ == "__main__":
-    # run(app, host="0.0.0.0", port=Settings.port)
-    pass
+    pokemon_app()
