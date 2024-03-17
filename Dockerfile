@@ -16,4 +16,4 @@ RUN poetry install --no-dev
 RUN chmod +x migrate.sh
 
 # Run app.py when the container launches
-CMD ./migrate.sh && python app.py
+CMD ./migrate.sh && streamlit run app.py

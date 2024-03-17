@@ -12,3 +12,5 @@ def pokemon_app():
         if img is not None:
             if str(img)[-4:] == ".png":
                 st.image(img)
+
+
