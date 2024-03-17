@@ -1,4 +1,5 @@
-import streamlit as st, requests
+import streamlit as st
+import requests
 
 
 def pokemon_app():

@@ -12,6 +12,19 @@ shell:
 streamlit:
 	poetry run streamlit run app.py
 
+migration:
+	if [ -z "$(m)" ]; then echo "Migration message is required. Use: make migration m='your message'"; exit 1; fi
+	poetry run alembic revision -m "$(m)"
+
+migrate_current:
+	poetry run alembic current
+
+migrate_up:
+	poetry run alembic upgrade head
+
+migrate_down:
+	poetry run alembic downgrade -1
+
 test:
 	export DATABASE_URL=$${DATABASE_URL}_test; \
 	poetry run alembic upgrade head; \
