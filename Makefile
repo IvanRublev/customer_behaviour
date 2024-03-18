@@ -9,7 +9,7 @@ lint:
 shell:
 	poetry run python
 
-streamlit:
+server:
 	poetry run streamlit run app.py
 
 migration:

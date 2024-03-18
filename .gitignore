@@ -48,3 +48,5 @@ build/
 
 # CSV
 *.csv
+*.xls
+*.xlsx
