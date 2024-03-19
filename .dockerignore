@@ -29,9 +29,3 @@ Makefile
 
 # Fly.io
 fly.toml
-
-
-# CSV
-*.csv
-*.xls
-*.xlsx

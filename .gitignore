@@ -44,9 +44,3 @@ build/
 
 # Environment variables
 .envrc
-
-
-# CSV
-*.csv
-*.xls
-*.xlsx

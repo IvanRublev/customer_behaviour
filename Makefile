@@ -28,7 +28,7 @@ migrate_down:
 test:
 	export DATABASE_URL=$${DATABASE_URL}_test; \
 	poetry run alembic upgrade head; \
-	poetry run -- ptw -- -s -v
+	poetry run -- ptw -- -s -vv $(args)
 
 test_once:
 	export DATABASE_URL=$${DATABASE_URL}_test; \
@@ -42,7 +42,7 @@ postgres_down:
 	docker-compose -f docker-compose-postgres.yml down
 
 docker_up:
-	docker build -t customer-trends . && docker run -d -e STREAMLIT_SERVER_COOKIE_SECRET=$${STREAMLIT_SERVER_COOKIE_SECRET} -e DATABASE_URL=postgresql://postgres:postgres@host.docker.internal:5432/customer_trends_dev -e STREAMLIT_SERVER_PORT=$${STREAMLIT_SERVER_PORT} -p $${STREAMLIT_SERVER_PORT}:$${STREAMLIT_SERVER_PORT} customer-trends
+	docker build -t customer-behaviour . && docker run -d -e STREAMLIT_SERVER_COOKIE_SECRET=$${STREAMLIT_SERVER_COOKIE_SECRET} -e DATABASE_URL=postgresql://postgres:postgres@host.docker.internal:5432/customer_trends_dev -e STREAMLIT_SERVER_PORT=$${STREAMLIT_SERVER_PORT} -p $${STREAMLIT_SERVER_PORT}:$${STREAMLIT_SERVER_PORT} customer-behaviour
 
 docker_down:
-	docker ps -a -q --filter ancestor=customer-trends | xargs -I {} sh -c 'docker stop {} && docker rm {}'
+	docker ps -a -q --filter ancestor=customer-behaviour | xargs -I {} sh -c 'docker stop {} && docker rm {}'

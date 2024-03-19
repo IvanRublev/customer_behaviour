@@ -1,5 +1,5 @@
-# from src.settings import Settings
-from src.pokemon import pokemon_app
+from src.customer_behaviour import customer_behaviour_app
+
 
 if __name__ == "__main__":
-    pokemon_app()
+    customer_behaviour_app()
