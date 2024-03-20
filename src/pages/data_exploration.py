@@ -75,7 +75,7 @@ cached: {is_report_cached(st.session_state, filter_key)}")
         chart.update_traces(yhoverformat=Settings.plot_currency_format)
         st.plotly_chart(chart, use_container_width=True)
 
-    st.header("Sample analysis")
+    st.header("📊 Sample analysis")
 
     if description:
         st.markdown(f"> {description}")

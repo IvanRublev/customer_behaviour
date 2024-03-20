@@ -13,10 +13,11 @@ def render(st):
                 In this project, we will analyze customer behavior using :
                 * Exploratory Data Analysis
                 * Customer Segmentation using RFM Analysis
-                
-                ## Dataset
-                
+                """)
+
+    st.header("Dataset")
+
+    st.markdown(f"""
                 As an example, we use the {dataset_link} of ~500K records.
                 > Chen,Daqing. (2019). Online Retail II. UCI Machine Learning Repository. https://doi.org/10.24432/C5CG6D.
-
                 """)
