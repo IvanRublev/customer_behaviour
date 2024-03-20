@@ -59,7 +59,7 @@ def customer_behaviour_app():
                     
                     ## Dataset
                     
-                    As an example, we use the {dataset_link} of ~1 million records.
+                    As an example, we use the {dataset_link} of ~500K records.
                     > Chen,Daqing. (2019). Online Retail II. UCI Machine Learning Repository. https://doi.org/10.24432/C5CG6D.
 
                     """)
