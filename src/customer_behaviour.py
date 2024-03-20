@@ -4,7 +4,7 @@ import streamlit as st
 from streamlit_ydata_profiling import st_profile_report
 from ydata_profiling import ProfileReport
 
-from src.dataframe.preprocess import cast_column_types, encode_countries, reject_outliers_by_iqr
+from src.dataframe.preprocess import cast_column_types, decode_countries, encode_countries, reject_outliers_by_iqr
 from src.dataframe.sample import take_sample
 from src.logger import logger
 from src.reports_cache import get_cached_report, is_report_cached
@@ -79,7 +79,6 @@ cached: {is_report_cached(st.session_state, filter_key)}")
 
         # Take sample for analysis
         sample, description = take_sample(df)
-        st.caption(description)
 
         report = get_cached_report(
             session_state=st.session_state,
@@ -112,13 +111,19 @@ cached: {is_report_cached(st.session_state, filter_key)}")
         charts_col1, charts_col2 = st.columns(2)
 
         with charts_col1:
-            st.markdown("Users per Country")
-            users_by_country = _users_by_country(sample, code_by_country)
-            chart = px.bar(users_by_country, x="Country", y="Users count", title="Users per Country")
+            users_by_country = _users_by_country(df, code_by_country)
+            chart = px.bar(users_by_country, x="Country", y="Users count", title="Users per Country for full dataset")
             st.plotly_chart(chart, use_container_width=True)
 
         with charts_col2:
             st.markdown("Revenue per Country")
+
+        if description:
+            st.markdown(f"""
+                        ## Detailed analysis
+
+                        > {description}
+                        """)
 
         st_profile_report(report)
         logger.info("Data Exploration report displayed")
@@ -127,8 +132,9 @@ cached: {is_report_cached(st.session_state, filter_key)}")
 
 
 @st.cache_data
-def _users_by_country(df):
-    users_by_country = df["Country"].value_counts()
+def _users_by_country(df, code_by_country):
+    users_by_country = decode_countries(df, code_by_country)
+    users_by_country = users_by_country["Country"].value_counts()
     # Convert the Series to a DataFrame
     users_by_country = users_by_country.reset_index()
     users_by_country.columns = ["Country", "Users count"]

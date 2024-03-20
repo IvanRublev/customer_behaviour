@@ -7,16 +7,10 @@ def test_pass_when_returns_sample_for_infinite_population_with_default_error_mar
 
     sample, description = take_sample(df)
 
-    assert len(sample) == 1067  # 1067 is the sample size for 95% confidence 3% margin of error
-    assert "this report has been produced using a sample" in description
-
-
-def test_pass_when_returns_sample_orderer_by_index():
-    df = build_dataframe(2000)
-
-    sample, description = take_sample(df, margin_of_error_percent=0.03)
-
     assert sample.index.is_monotonic_increasing
+
+    assert len(sample) == 1067  # 1067 is the sample size for 95% confidence 3% margin of error
+    assert "the following report has been produced using a sample" in description
 
 
 def test_pass_when_returns_original_dataframe_when_smaller_than_sample_size():
@@ -25,4 +19,4 @@ def test_pass_when_returns_original_dataframe_when_smaller_than_sample_size():
     sample, description = take_sample(df, margin_of_error_percent=0.01)
 
     assert len(sample) == 100
-    assert description == ""
+    assert description == None

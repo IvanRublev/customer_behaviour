@@ -7,13 +7,14 @@ def take_sample(df, margin_of_error_percent=0.03):
 
     Returns:
     - sample (pandas.DataFrame): The sampled DataFrame.
-    - description (str): A description of the sampling process.
+    - description (str): A markdown description of the sampling process.
 
     If the sample size is smaller than the size of the original DataFrame, a random sample of
     the specified size is taken. Otherwise, the original DataFrame is returned as is.
 
     The description provides information about the sampling process, including the sample size,
     confidence level, and margin of error.
+    If the sample size is smaller than the size of the original DataFrame, the description is None.
     """
 
     # Let's calculate sample size for behaviour of infinite human population with:
@@ -22,12 +23,12 @@ def take_sample(df, margin_of_error_percent=0.03):
     # and set margin of error
     sample_size = int(round(pow(1.96, 2) * 0.25 / pow(margin_of_error_percent, 2)))
 
-    description = ""
+    description = None
     sample = df
     df_len = len(df)
 
     if sample_size < df_len:
-        description = f"Disclaimer: this report has been produced using a sample\
+        description = f"**Disclaimer**: the following report has been produced using a sample\
                 of {sample_size} random records from the original dataset of {df_len} records\
                 to do estimations at a 95% confidence level \
                 with a {int(margin_of_error_percent*100)}% margin of error."
