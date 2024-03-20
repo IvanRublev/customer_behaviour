@@ -1,4 +1,5 @@
 import pandas as pd
+import plotly.express as px
 import streamlit as st
 from streamlit_ydata_profiling import st_profile_report
 from ydata_profiling import ProfileReport
@@ -108,10 +109,30 @@ cached: {is_report_cached(st.session_state, filter_key)}")
             ),
         )
 
+        charts_col1, charts_col2 = st.columns(2)
+
+        with charts_col1:
+            st.markdown("Users per Country")
+            users_by_country = _users_by_country(sample, code_by_country)
+            chart = px.bar(users_by_country, x="Country", y="Users count", title="Users per Country")
+            st.plotly_chart(chart, use_container_width=True)
+
+        with charts_col2:
+            st.markdown("Revenue per Country")
+
         st_profile_report(report)
         logger.info("Data Exploration report displayed")
 
         _enable_sidebar_filters()
+
+
+@st.cache_data
+def _users_by_country(df):
+    users_by_country = df["Country"].value_counts()
+    # Convert the Series to a DataFrame
+    users_by_country = users_by_country.reset_index()
+    users_by_country.columns = ["Country", "Users count"]
+    return users_by_country
 
 
 def _apply_data_exploration_sidebar_filters(df, code_by_country):

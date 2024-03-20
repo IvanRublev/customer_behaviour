@@ -40,6 +40,23 @@ def encode_countries(df):
     return df, code_by_country
 
 
+def decode_countries(df, code_by_country):
+    """Decode the 'Country' column in the given DataFrame from numerical codes to contry names.
+
+    Parameters:
+        df (pandas.DataFrame): The DataFrame containing the 'Country' column to be decoded.
+        code_by_country (dict): A dictionary mapping countries to their corresponding codes.
+
+    Returns:
+        pandas.DataFrame: The DataFrame with the 'Country' column decoded in "Country name (code)" format.
+    """
+
+    country_by_code = {code: f"{country} ({code})" for country, code in code_by_country.items()}
+    df["Country"] = df["Country"].map(country_by_code)
+
+    return df
+
+
 def reject_outliers_by_iqr(df, column):
     """Reject outlier values by given dataframe's column using the Interquartile Range (IQR) method.
 
