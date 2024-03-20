@@ -1,3 +1,6 @@
+from src.settings import Settings
+
+
 def take_sample(df, margin_of_error_percent=0.03):
     """Takes a sample from a DataFrame.
 
@@ -28,8 +31,10 @@ def take_sample(df, margin_of_error_percent=0.03):
     df_len = len(df)
 
     if sample_size < df_len:
+        sample_size_str = Settings.text_integer_format.format(sample_size)
+        df_len_str = Settings.text_integer_format.format(df_len)
         description = f"**Disclaimer**: the following report has been produced using a sample\
-                of {sample_size} random records from the original dataset of {df_len} records\
+                of {sample_size_str} random records from the original dataset of {df_len_str} records\
                 to do estimations at a 95% confidence level \
                 with a {int(margin_of_error_percent*100)}% margin of error."
 

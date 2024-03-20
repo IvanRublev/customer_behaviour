@@ -21,6 +21,7 @@ class Settings:
     dataset_csv_path: str = "dataset/online_retail_II.csv"
     plot_integer_format: str = ",d"
     plot_currency_format: str = "$,r"
+    text_integer_format: str = "{:,d}"
 
     # From pyproject.toml
 
