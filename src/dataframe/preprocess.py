@@ -15,7 +15,7 @@ def cast_column_types(df):
     df["Quantity"] = df["Quantity"].astype("Int64")
     df["InvoiceDate"] = pd.to_datetime(df["InvoiceDate"])
     df["Price"] = df["Price"].astype("Float64")
-    df["Customer ID"] = pd.Categorical(df["Customer ID"])
+    df["Customer ID"] = df["Customer ID"].astype("Float64")
     df["Country"] = pd.Categorical(df["Country"])
     df["TotalCost"] = df["Quantity"] * df["Price"]
 
