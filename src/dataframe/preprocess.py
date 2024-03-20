@@ -18,7 +18,6 @@ def cast_column_types(df):
     df["Price"] = df["Price"].astype("Float64")
     df["Customer ID"] = df["Customer ID"].astype("Float64")
     df["Country"] = pd.Categorical(df["Country"])
-    df["TotalCost"] = df["Quantity"] * df["Price"]
 
     return df
 

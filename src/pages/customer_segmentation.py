@@ -1,5 +1,6 @@
 import streamlit as st
 
+from src.dataframe.statistics import rfm_scores
 from src.settings import Settings
 
 
@@ -14,6 +15,10 @@ def render(st, df):
 
     st.header("📊 Recency, Frequency, and Monetary (RFM) analysis")
 
-    st.write("This page is under construction")
+    rfm = _rfm_scores(df)
 
+    
 
+@st.cache_data
+def _rfm_scores(df):
+    return rfm_scores(df)

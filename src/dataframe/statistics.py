@@ -1,26 +1,33 @@
-def rfm_statistics(df):
-    """Creates a Recency, Frequency, and Monetary (RFM) statistics table.
+def rfm_scores(df):
+    """Calculates a Recency, Frequency, and Monetary statistics (RFM) by Customer Id.
 
     Parameters:
         df (pandas.DataFrame): The input dataframe containing customer data.
 
+    Calculated scores:
+        - Recency: The number of days since the last purchase.
+        - Frequency: The number of unique purchases.
+        - Monetary: The total amount spent.
+
     Returns:
         pandas.DataFrame: The RFM statistics table.
     """
-    pass
 
-    snap_date = df[date].max()
-    rfmTable = (
-        df.groupby(customer_id)
+    snapshot_date = df["InvoiceDate"].max()
+
+    rfm = (
+        df.groupby("Customer ID")
         .agg(
             {
-                date: lambda x: (snap_date - x.max()).days,
-                transaction_id: lambda x: x.nunique(),
-                "Total": lambda x: x.sum(),
+                "InvoiceDate": lambda dates: (snapshot_date - dates.max()).days,
+                "Invoice ID": lambda invoice_ids: invoice_ids.nunique(),
+                "TotalCost": lambda total_cost: total_cost.sum(),
             }
         )
         .reset_index()
     )
-    rfmTable[date] = rfmTable[date].astype(int)
-    rfmTable.rename(columns={date: "recency", transaction_id: "frequency", "Total": "monetary"}, inplace=True)
-    return rfmTable
+    rfm.set_index("Customer ID", inplace=True)
+    rfm.rename(columns={"InvoiceDate": "recency", "Invoice ID": "frequency", "TotalCost": "monetary"}, inplace=True)
+    rfm["recency"] = rfm["recency"].astype("Int64")
+
+    return rfm

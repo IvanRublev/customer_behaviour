@@ -15,6 +15,8 @@ def _prepare_dataframe():
     df["Invoice ID"] = df["Invoice"]
     df = df.drop("Invoice", axis=1)
 
+    df["TotalCost"] = df["Quantity"] * df["Price"]
+
     df = df.dropna()
     df = df.drop(df[df["Quantity"] <= 0].index)
 
