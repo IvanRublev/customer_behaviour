@@ -3,7 +3,6 @@ import streamlit as st
 from streamlit_ydata_profiling import st_profile_report
 from ydata_profiling import ProfileReport
 
-from src.conditional import is_digit_and_alpha
 from src.dataframe.preprocess import encode_countries, preprocess, reject_outliers_by_iqr
 from src.dataframe.sample import take_sample
 from src.logger import logger
@@ -83,6 +82,8 @@ def customer_behaviour_app():
 
 
 def _apply_sidebar_filters(df, code_by_country):
+    logger.info(f"Applying sidebar filters to dataframe of shape: {df.shape}")
+
     filter_key = ""
 
     # ---
@@ -123,26 +124,5 @@ def _apply_sidebar_filters(df, code_by_country):
     logger.info(f"Country code: {country_code}")
 
     filter_key += f"_country{country_code}_" if country_code else ""
-
-    # ---
-    st.sidebar.subheader("🎧 Stock Code Filter")
-
-    stock_kind_by_option = {"None": None, "Only numbers": 1, "Only letters": 2, "Number + Letters": 3}
-    stock_option = st.sidebar.selectbox(
-        "Select the kind of stock codes to include or select none for all:",
-        list(stock_kind_by_option.keys()),
-    )
-    logger.info(f"Stock codes: {stock_option}")
-    stock_filter_kind = stock_kind_by_option[stock_option]
-    logger.info(f"Stock codes kind: {stock_filter_kind}")
-    if stock_filter_kind:
-        if stock_filter_kind == 1:
-            df = df[df["StockCode"].str.isdigit()]
-        elif stock_filter_kind == 2:
-            df = df[df["StockCode"].str.isalpha()]
-        elif stock_filter_kind == 3:
-            df = df[df["StockCode"].apply(is_digit_and_alpha)]
-
-    filter_key += f"_stock_code{stock_filter_kind}_" if stock_filter_kind else ""
 
     return df, filter_key
