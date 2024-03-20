@@ -3,7 +3,7 @@ import streamlit as st
 from streamlit_ydata_profiling import st_profile_report
 from ydata_profiling import ProfileReport
 
-from src.dataframe.preprocess import encode_countries, preprocess, reject_outliers_by_iqr
+from src.dataframe.preprocess import cast_column_types, encode_countries, reject_outliers_by_iqr
 from src.dataframe.sample import take_sample
 from src.logger import logger
 from src.reports_cache import get_cached_report
@@ -15,9 +15,23 @@ def customer_behaviour_app():
 
     # Prepare the dataset
     df = pd.read_csv(Settings.dataset_csv_path)
-    df = preprocess(df)
-    df = reject_outliers_by_iqr(df, "TotalCost")
+
+    df = df.drop("Invoice", axis=1)
+
+    df = df.dropna()
+    df = df.drop(df[df["Quantity"] <= 0].index)
+
+    df = df.drop_duplicates()
+
+    # we encode the countries to a numerical value to prevent correlation analysis crash
     df, code_by_country = encode_countries(df)
+
+    df = cast_column_types(df)
+
+    # sort for time series analysis
+    df = df.sort_values("InvoiceDate")
+
+    df = reject_outliers_by_iqr(df, "TotalCost")
 
     # Configure UI
     icon = "📊"

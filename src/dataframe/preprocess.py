@@ -1,24 +1,15 @@
 import pandas as pd
 
 
-def preprocess(df):
-    """Cleans and enreaches the given DataFrame
+def cast_column_types(df):
+    """Casts the column types of the given DataFrame.
 
-    Operations:
-        drops unused columns
-        removes missing values
-        removes negative or zero quantities
-        adds total cost column
-        converts data types
-        sorts data by invoice date
+    Args:
+        df (pd.DataFrame): The DataFrame to be processed.
+
+    Returns:
+        pd.DataFrame: The processed DataFrame with updated column types.
     """
-
-    df = df.drop("Invoice", axis=1)
-    df = df.dropna()
-    df = df.drop(df[df["Quantity"] <= 0].index)
-
-    df = df.drop_duplicates()
-
     df["StockCode"] = pd.Categorical(df["StockCode"])
     df["Description"] = df["Description"].astype("string")
     df["Quantity"] = df["Quantity"].astype("Int64")
@@ -27,8 +18,6 @@ def preprocess(df):
     df["Customer ID"] = pd.Categorical(df["Customer ID"])
     df["Country"] = pd.Categorical(df["Country"])
     df["TotalCost"] = df["Quantity"] * df["Price"]
-
-    df = df.sort_values("InvoiceDate")
 
     return df
 
@@ -52,7 +41,7 @@ def encode_countries(df):
 
 
 def reject_outliers_by_iqr(df, column):
-    """Filters out outliers from the given DataFrame using the Interquartile Range (IQR) method.
+    """Reject outlier values by given dataframe's column using the Interquartile Range (IQR) method.
 
     Parameters:
         df (pandas.DataFrame): The DataFrame from which to filter outliers.
