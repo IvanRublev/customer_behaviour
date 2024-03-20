@@ -42,6 +42,6 @@ kill_timeout = '5s'
     path = '/'
 
 [[vm]]
-  memory = '512mb'
+  memory = '2048mb'
   cpu_kind = 'shared'
   cpus = 1
