@@ -6,12 +6,14 @@ from ydata_profiling import ProfileReport
 from src.dataframe.preprocess import cast_column_types, encode_countries, reject_outliers_by_iqr
 from src.dataframe.sample import take_sample
 from src.logger import logger
-from src.reports_cache import get_cached_report
+from src.reports_cache import get_cached_report, is_report_cached
 from src.settings import Settings
 
 
 def customer_behaviour_app():
     logger.info("UI loop")
+
+    _maybe_initialize_session_state()
 
     # Prepare the dataset
     df = pd.read_csv(Settings.dataset_csv_path)
@@ -39,9 +41,6 @@ def customer_behaviour_app():
     st.sidebar.title(f"{icon} {Settings.app_name}")
     side = st.sidebar.selectbox("Please, choose a Report", ["Home", "Data Exploration"])
 
-    # Apply filters
-    df, filter_key = _apply_sidebar_filters(df, code_by_country)
-
     if side == "Home":
         st.title(Settings.app_description, anchor="home")
 
@@ -53,7 +52,7 @@ def customer_behaviour_app():
                     
                     ## Dataset
                     
-                    As an example, we use the {dataset_link} of 1 million records.
+                    As an example, we use the {dataset_link} of ~1 million records.
                     > Chen,Daqing. (2019). Online Retail II. UCI Machine Learning Repository. https://doi.org/10.24432/C5CG6D.
 
                     """)
@@ -61,13 +60,23 @@ def customer_behaviour_app():
     elif side == "Data Exploration":
         st.title("Data Exploration", anchor="data-exploration")
 
+        # Apply filters
+        df, filter_key = _apply_data_exploration_sidebar_filters(df, code_by_country)
+
+        logger.info(f"Data Exploration filter_key: {filter_key}, \
+                    cached: {is_report_cached(st.session_state, filter_key)}")
+
+        if not is_report_cached(st.session_state, filter_key):
+            _disable_sidebar_filters()
+
+        # Take sample for analysis
         sample, description = take_sample(df)
         st.caption(description)
 
-        cache_key = f"data_exploration{filter_key}"
         report = get_cached_report(
-            cache_key,
-            lambda: ProfileReport(
+            session_state=st.session_state,
+            report_name=filter_key,
+            generator_fun=lambda: ProfileReport(
                 sample,
                 explorative=True,
                 tsmode=True,
@@ -93,18 +102,24 @@ def customer_behaviour_app():
         )
 
         st_profile_report(report)
+        logger.info("Data Exploration report displayed")
+
+        _enable_sidebar_filters()
 
 
-def _apply_sidebar_filters(df, code_by_country):
-    logger.info(f"Applying sidebar filters to dataframe of shape: {df.shape}")
+def _apply_data_exploration_sidebar_filters(df, code_by_country):
+    logger.info(f"Applying data exploration sidebar filters to dataframe of shape: {df.shape}")
 
-    filter_key = ""
+    filter_key = "data_exploration_"
 
     # ---
     st.sidebar.subheader("📅 Date Range")
 
     min_date, max_date = df.InvoiceDate.dt.date.min(), df.InvoiceDate.dt.date.max()
-    date = st.sidebar.date_input("Select your date range", (min_date, max_date))
+    date = st.sidebar.date_input(
+        "Select your date range", (min_date, max_date), disabled=st.session_state.filters_disabled
+    )
+
     if len(date) == 2:
         if date[0] >= min_date and date[1] <= max_date:
             df = df[(df["InvoiceDate"] >= pd.to_datetime(date[0])) & (df["InvoiceDate"] <= pd.to_datetime(date[1]))]
@@ -129,6 +144,7 @@ def _apply_sidebar_filters(df, code_by_country):
     country = st.sidebar.selectbox(
         "Select the specific country you wish to analyse or select none for all countries:",
         countries_list,
+        disabled=st.session_state.filters_disabled,
     )
     logger.info(f"Country: {country}")
 
@@ -140,3 +156,29 @@ def _apply_sidebar_filters(df, code_by_country):
     filter_key += f"_country{country_code}_" if country_code else ""
 
     return df, filter_key
+
+
+def _maybe_initialize_session_state():
+    if "filters_disabled" not in st.session_state:
+        st.session_state["filters_disabled"] = True
+        logger.info(f"After init, st.session_state.filters_disabled: {st.session_state.filters_disabled}")
+
+
+def _enable_sidebar_filters():
+    # we rerun the app to make Input widgets pickup the disabled state
+    # if flag is not changing, we don't want to rerun the app
+    if st.session_state.filters_disabled:
+        st.session_state["filters_disabled"] = False
+        logger.info(f"After enable sidebar filters, \
+                    st.session_state.filters_disabled: {st.session_state.filters_disabled}, return")
+        st.rerun()
+
+
+def _disable_sidebar_filters():
+    if not st.session_state.filters_disabled:
+        st.session_state["filters_disabled"] = True
+        logger.info(
+            f"After disable sidebar filters, \
+                st.session_state.filters_disabled: {st.session_state.filters_disabled}, rerun"
+        )
+        st.rerun()
