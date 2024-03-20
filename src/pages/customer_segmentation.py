@@ -15,3 +15,5 @@ def render(st, df):
     st.header("📊 Recency, Frequency, and Monetary (RFM) analysis")
 
     st.write("This page is under construction")
+
+

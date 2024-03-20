@@ -10,6 +10,7 @@ def cast_column_types(df):
     Returns:
         pd.DataFrame: The processed DataFrame with updated column types.
     """
+    df["Invoice ID"] = pd.Categorical(df["Invoice ID"])
     df["StockCode"] = pd.Categorical(df["StockCode"])
     df["Description"] = df["Description"].astype("string")
     df["Quantity"] = df["Quantity"].astype("Int64")

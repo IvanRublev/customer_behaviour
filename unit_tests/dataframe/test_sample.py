@@ -19,4 +19,4 @@ def test_pass_when_returns_original_dataframe_when_smaller_than_sample_size():
     sample, description = take_sample(df, margin_of_error_percent=0.01)
 
     assert len(sample) == 100
-    assert description == None
+    assert not description

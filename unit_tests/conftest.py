@@ -28,6 +28,9 @@ def build_dataframe(rows_count: int = 100):
     """Returns a dataframe with N rows"""
     df = pd.read_csv("dataset/online_retail_II_100.csv")
 
+    df["Invoice ID"] = df["Invoice"]
+    df = df.drop("Invoice", axis=1)
+
     while len(df) < rows_count:
         df = pd.concat([df, df])
 

@@ -9,7 +9,7 @@ def render(st):
     st.title(Settings.app_description, anchor="home")
 
     dataset_link = "[Online Retail II dataset](https://archive.ics.uci.edu/dataset/502/online+retail+ii)"
-    st.markdown(f"""
+    st.markdown("""
                 In this project, we will analyze customer behavior using :
                 * Exploratory Data Analysis
                 * Customer Segmentation using RFM Analysis

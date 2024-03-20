@@ -1,3 +1,4 @@
+import pandas as pd
 import plotly.express as px
 import streamlit as st
 from streamlit_ydata_profiling import st_profile_report

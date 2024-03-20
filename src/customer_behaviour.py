@@ -12,6 +12,7 @@ def _prepare_dataframe():
     # Prepare the dataset
     df = pd.read_csv(Settings.dataset_csv_path)
 
+    df["Invoice ID"] = df["Invoice"]
     df = df.drop("Invoice", axis=1)
 
     df = df.dropna()
