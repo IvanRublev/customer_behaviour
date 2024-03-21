@@ -1,7 +1,6 @@
 import pandas as pd
 
 from src.dataframe.label import k_means_centroids
-from unit_tests.conftest import build_dataframe
 
 
 def test_label_k_means_centroids_pass_when_returns_labels():

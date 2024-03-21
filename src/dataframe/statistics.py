@@ -5,9 +5,9 @@ def rfm_scores(df):
         df (pandas.DataFrame): The input dataframe containing customer data.
 
     Calculated scores:
-        - Recency: The number of days since the last purchase.
-        - Frequency: The number of unique purchases.
-        - Monetary: The total amount spent.
+        - recency: The number of days since the last purchase.
+        - frequency: The number of unique purchases.
+        - monetary: The total amount spent.
 
     Returns:
         pandas.DataFrame: The RFM statistics table.
@@ -26,8 +26,7 @@ def rfm_scores(df):
         )
         .reset_index()
     )
-    rfm.set_index("Customer ID", inplace=True)
     rfm.rename(columns={"InvoiceDate": "recency", "Invoice ID": "frequency", "TotalCost": "monetary"}, inplace=True)
-    rfm["recency"] = rfm["recency"].astype("Int64")
+    rfm["recency"] = rfm["recency"].astype(int)
 
     return rfm

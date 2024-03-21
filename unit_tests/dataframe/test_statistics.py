@@ -17,10 +17,8 @@ def test_rfm_scores_pass_when_returns_recency_frequency_and_monetary_statistics(
             {"Customer ID": 200, "recency": 0, "frequency": 1, "monetary": 30},
         ]
     )
-    expected_stats.set_index("Customer ID", inplace=True)
-    expected_stats["recency"] = expected_stats["recency"].astype("Int64")
 
     scores = rfm_scores(df)
 
-    assert scores.columns.to_list() == ["recency", "frequency", "monetary"]
+    assert scores.columns.to_list() == ["Customer ID", "recency", "frequency", "monetary"]
     assert scores.equals(expected_stats)
