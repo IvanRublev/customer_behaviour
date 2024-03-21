@@ -2,6 +2,7 @@
 
 deps:
 	poetry install
+	./clone_github_deps.sh
 
 lint:
 	poetry run ruff check . 

@@ -42,5 +42,8 @@ build/
 # Poetry
 /poetry.lock
 
+# Github dependencies
+/deps
+
 # Environment variables
 .envrc
