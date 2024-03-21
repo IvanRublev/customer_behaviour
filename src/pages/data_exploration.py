@@ -35,15 +35,15 @@ cached: {is_report_cached(st.session_state, filter_key)}")
 
     with charts_col1:
         users_by_country = _users_by_country(df, code_by_country)
-        chart = px.bar(users_by_country, x="Country", y="Users count", title="Users per Country")
-        chart.update_traces(yhoverformat=Settings.plot_integer_format)
-        st.plotly_chart(chart, use_container_width=True)
+        fig = px.bar(users_by_country, x="Country", y="Users count", title="Users per Country")
+        fig.update_traces(yhoverformat=Settings.plot_integer_format)
+        st.plotly_chart(fig, use_container_width=True)
 
     with charts_col2:
         revenue_by_country = _revenue_by_country(df, code_by_country)
-        chart = px.bar(revenue_by_country, x="Country", y="Revenue", title="Revenue per Country")
-        chart.update_traces(yhoverformat=Settings.plot_currency_format)
-        st.plotly_chart(chart, use_container_width=True)
+        fig = px.bar(revenue_by_country, x="Country", y="Revenue", title="Revenue per Country")
+        fig.update_traces(yhoverformat=Settings.plot_currency_format)
+        st.plotly_chart(fig, use_container_width=True)
 
     st.header("📊 Sample analysis")
 
