@@ -56,4 +56,4 @@ def customer_behaviour_app():
         data_exploration.render(st, df=df, code_by_country=code_by_country)
 
     elif side == "Customer Segmentation":
-        customer_segmentation.render(st, df=df)
+        customer_segmentation.render(st, df=df, code_by_country=code_by_country)

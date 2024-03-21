@@ -3,18 +3,20 @@ import plotly.express as px
 import streamlit as st
 
 from src.analysis.segmentation import k_means_centroids, rfm_scores, summarize_segments
+from src.pages.sidebar import append_filters_title, country_filter, date_range_filter, enable_sidebar_filters
 
 
 def maybe_initialize_session_state(st):
     pass
 
 
-def render(st, df):
-    st.title("Customer Segmentation", anchor="customer-segmentation")
+def render(st, df, code_by_country):
+    enable_sidebar_filters()
+    df, segment_count, dates, country = _apply_sidebar_filters(df, code_by_country)
+
+    st.title(append_filters_title("Customer Segmentation", dates, country), anchor="customer-segmentation")
 
     st.write("We use K-Means method to segment customers by normalized Recency Frequency and Monetary (RFM) values.")
-
-    segment_count = st.sidebar.selectbox("Select the number of segment you want to create:", [2, 3, 4, 5])
 
     rfm_scores, rfm_segments, rfm_segments_summary, features_importance = _rfm_tables(df, segment_count)
     rfm_scores["Customer ID"] = pd.Categorical(rfm_scores["Customer ID"])
@@ -123,3 +125,14 @@ def _rfm_tables(df, segments):
     segments, features_importance = k_means_centroids(scores, n_clusters=segments)
     segments_summary = summarize_segments(segments)
     return scores, segments, segments_summary, features_importance
+
+
+def _apply_sidebar_filters(df, code_by_country):
+    st.sidebar.subheader("🍰 Segments count")
+
+    segment_count = st.sidebar.selectbox("Select the number of segments you want to create:", [2, 3, 4, 5])
+
+    df, _filter_key, dates = date_range_filter(df)
+    df, _filter_key, country = country_filter(df, code_by_country)
+
+    return df, segment_count, dates, country
