@@ -38,19 +38,83 @@ def render(st, df):
         st.download_button("⬇️ Download", rfm_segments.to_csv(index=False), "rfm_segmentation_result.csv")
         st.dataframe(rfm_segments, height=250)
 
-    st.header("📊 Recency, Frequency, and Monetary (RFM) Segmentation Exploration")
+    st.header("📊 Recency, Frequency, and Monetary Segmentation Exploration")
 
-    fig = px.scatter_3d(
-        rfm_segments,
-        x="Recency",
-        y="Frequency",
-        z="Monetary",
-        color="Segment ID",
-        title="3D Plot of RFM",
-        category_orders={"Segment ID": [str(i) for i in range(1, segment_count + 1)]},
+    tab0, tab1, tab2, tab3, tab4 = st.tabs(
+        [
+            "Customers Distribution",
+            "3D Plot of RFM",
+            "1️⃣ Recency vs Frequency",
+            "2️⃣ Recency vs Monetary",
+            "3️⃣ Frequency vs Monetary",
+        ]
     )
-    fig.update_layout(scene=dict(xaxis_title="Recency (Days)", yaxis_title="Frequency (Invoices)"))
-    st.plotly_chart(fig, use_container_width=True)
+
+    with tab0:
+        fig = px.bar(
+            rfm_segments_summary, y="Segment ID", x="Customer Count", orientation="h", title="Customers Distribution"
+        )
+        fig.update_yaxes(dtick=1)
+        st.plotly_chart(fig, use_container_width=True)
+
+    px_category_order = {"Segment ID": [str(i) for i in range(1, segment_count + 1)]}
+    colorbar_ticks = {
+        "tickvals": list(range(1, segment_count + 1)),
+        "ticktext": [str(i) for i in range(1, segment_count + 1)],
+    }
+
+    with tab1:
+        fig = px.scatter_3d(
+            rfm_segments,
+            x="Recency",
+            y="Frequency",
+            z="Monetary",
+            color="Segment ID",
+            title="3D Plot of RFM",
+            category_orders=px_category_order,
+        )
+        fig.update_coloraxes(colorbar=colorbar_ticks)
+        fig.update_layout(scene={"xaxis_title": "Recency (Days)", "yaxis_title": "Frequency (Invoices)"})
+        st.plotly_chart(fig, use_container_width=True)
+
+    with tab2:
+        fig = px.scatter(
+            rfm_segments,
+            x="Recency",
+            y="Frequency",
+            color="Segment ID",
+            title="Recency vs Frequency",
+            category_orders=px_category_order,
+        )
+        fig.update_coloraxes(colorbar=colorbar_ticks)
+        fig.update_layout(xaxis_title="Recency (Days)", yaxis_title="Frequency (Invoices)")
+        st.plotly_chart(fig, use_container_width=True)
+
+    with tab3:
+        fig = px.scatter(
+            rfm_segments,
+            x="Recency",
+            y="Monetary",
+            color="Segment ID",
+            title="Recency vs Monetary",
+            category_orders=px_category_order,
+        )
+        fig.update_coloraxes(colorbar=colorbar_ticks)
+        fig.update_layout(xaxis_title="Recency (Days)")
+        st.plotly_chart(fig, use_container_width=True)
+
+    with tab4:
+        fig = px.scatter(
+            rfm_segments,
+            x="Frequency",
+            y="Monetary",
+            color="Segment ID",
+            title="Frequency vs Monetary",
+            category_orders=px_category_order,
+        )
+        fig.update_coloraxes(colorbar=colorbar_ticks)
+        fig.update_layout(xaxis_title="Frequency (Invoices)")
+        st.plotly_chart(fig, use_container_width=True)
 
 
 @st.cache_data
