@@ -59,7 +59,14 @@ def k_means_centroids(df, n_clusters):
 def summarize_segments(labeled_rfm):
     return (
         labeled_rfm.groupby("Segment ID")
-        .agg({"Recency": "mean", "Frequency": "mean", "Monetary": "mean", "Customer ID": "count"})
+        .agg(
+            {
+                "Recency": lambda x: x.mean().astype(int),
+                "Frequency": lambda x: x.mean().astype(int),
+                "Monetary": lambda x: round(x.mean(), 2),
+                "Customer ID": "count",
+            }
+        )
         .reset_index()
         .rename(
             columns={

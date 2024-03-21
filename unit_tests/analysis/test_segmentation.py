@@ -57,8 +57,8 @@ def test_summarize_segments_passes_when_returns_mean_values_by_segment():
     expected_df = pd.DataFrame(
         columns=["Segment ID", "Average Recency", "Average Frequency", "Average Monetary", "Customer Count"],
         data=[
-            [1, 164.0, 10.0, 327.86, 1],
-            [2, 22.0, 2.0, 1447.68, 2],
+            [1, 164, 10, 327.86, 1],
+            [2, 22, 2, 1447.68, 2],
         ],
     )
 
