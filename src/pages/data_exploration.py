@@ -6,7 +6,7 @@ from ydata_profiling import ProfileReport
 from src.dataframe.preprocess import decode_countries
 from src.dataframe.sample import take_sample
 from src.logger import logger
-from src.pages.sidebar import (
+from src.pages.components.sidebar import (
     append_filters_title,
     country_filter,
     date_range_filter,
