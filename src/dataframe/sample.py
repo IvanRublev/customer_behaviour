@@ -33,7 +33,7 @@ def take_sample(df, margin_of_error_percent=0.03):
     if sample_size < df_len:
         sample_size_str = Settings.text_integer_format.format(sample_size)
         df_len_str = Settings.text_integer_format.format(df_len)
-        description = f"**Disclaimer**: the following report has been produced using a sample\
+        description = f"**Note**: the following report has been produced using a sample\
                 of {sample_size_str} random records from the original dataset of {df_len_str} records\
                 to do estimations at a 95% confidence level \
                 with a {int(margin_of_error_percent*100)}% margin of error."
