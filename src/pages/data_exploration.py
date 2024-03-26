@@ -110,7 +110,7 @@ def _users_by_country(df, code_by_country):
 @st.cache_data
 def _revenue_by_country(df, code_by_country):
     revenue_by_country = decode_countries(df, code_by_country)
-    revenue_by_country = revenue_by_country.groupby("Country", observed=False)["TotalCost"].sum()
+    revenue_by_country = revenue_by_country.groupby("Country", observed=True)["TotalCost"].sum()
     # Convert the Series to a DataFrame
     revenue_by_country = revenue_by_country.reset_index()
     revenue_by_country.columns = ["Country", "Revenue"]

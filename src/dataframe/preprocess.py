@@ -75,4 +75,4 @@ def reject_outliers_by_iqr(df, column):
     lower_bound = q1 - 1.5 * iqr
     upper_bound = q3 + 1.5 * iqr
 
-    return df[(df[column] >= lower_bound) & (df[column] <= upper_bound)]
+    return df[(df[column] >= lower_bound) & (df[column] <= upper_bound)].reset_index()

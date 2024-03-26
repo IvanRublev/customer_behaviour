@@ -43,10 +43,13 @@ def customer_behaviour_app():
     # Configure UI
     icon = "🌎"
     st.set_page_config(page_title=Settings.app_description, page_icon=icon, layout="wide")
+
     st.sidebar.title(f"{icon} {Settings.app_name}")
     side = st.sidebar.selectbox(
         "Please, choose a Report", ["Home", "Data Exploration", "Customer Segmentation", "Market Basket Analysis"]
     )
+    if side != "Home":
+        st.sidebar.markdown("---")
 
     df, code_by_country = prepare_dataframe()
 

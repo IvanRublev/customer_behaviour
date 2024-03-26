@@ -20,7 +20,7 @@ def rfm_scores(df):
     snapshot_date = df["InvoiceDate"].max()
 
     rfm = (
-        df.groupby("Customer ID", observed=False)
+        df.groupby("Customer ID", observed=True)
         .agg(
             {
                 "InvoiceDate": lambda dates: (snapshot_date - dates.max()).days,
@@ -58,7 +58,7 @@ def k_means_centroids(df, n_clusters):
 
 def summarize_segments(labeled_rfm):
     return (
-        labeled_rfm.groupby("Segment ID", observed=False)
+        labeled_rfm.groupby("Segment ID", observed=True)
         .agg(
             {
                 "Recency": lambda x: x.mean().astype(int),
