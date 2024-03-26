@@ -16,10 +16,10 @@ def maybe_prepare_data_on_disk(df):
     if not os.path.isfile(_association_rules_file) or (
         os.path.getmtime(_association_rules_file) <= os.path.getmtime(Settings.dataset_csv_path)
     ):
+        description_by_stock_code = df.groupby("StockCode", observed=False)["Description"].first()
+
         stock_code_by_invoice_id = df.groupby("Invoice ID", observed=False)["StockCode"].apply(list).reset_index()
         transactions = stock_code_by_invoice_id["StockCode"]
-
-        description_by_stock_code = df.groupby("StockCode", observed=False)["Description"].first()
 
         # it takes about 5 min to calculate
         relations_generator = apriori(transactions, min_support=0.0045, min_confidence=0.2, min_lift=3, min_length=2)

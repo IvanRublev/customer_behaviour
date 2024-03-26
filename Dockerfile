@@ -17,8 +17,5 @@ RUN apt-get update && apt-get install -y git
 RUN chmod +x clone_github_deps.sh
 RUN ./clone_github_deps.sh
 
-# Make the migrate.sh file executable
-RUN chmod +x migrate.sh
-
 # Run app.py when the container launches
-CMD ./migrate.sh && poetry run python prepare_data.py && poetry run streamlit run app.py
+CMD poetry run python prepare_data.py && poetry run streamlit run app.py

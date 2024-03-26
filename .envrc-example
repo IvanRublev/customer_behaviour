@@ -1,3 +1,2 @@
-export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/customer_trends_dev
 export STREAMLIT_SERVER_PORT=8000
 export STREAMLIT_SERVER_COOKIE_SECRET='<<uuid here>>'
