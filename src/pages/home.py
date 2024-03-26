@@ -13,6 +13,7 @@ def render(st):
                 In this project, we will analyze customer behavior using :
                 * Exploratory Data Analysis
                 * Customer Segmentation using RFM Analysis
+                * Market Basket Analysis
                 """)
 
     st.header("Dataset")

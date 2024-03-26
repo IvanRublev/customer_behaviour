@@ -4,7 +4,7 @@ import streamlit as st
 from src.dataframe.preprocess import cast_column_types, encode_countries, reject_outliers_by_iqr
 from src.logger import logger
 from src.settings import Settings
-from src.pages import customer_segmentation, data_exploration, home
+from src.pages import customer_segmentation, data_exploration, home, market_basket_analysis
 
 
 @st.cache_data
@@ -42,9 +42,11 @@ def customer_behaviour_app():
     icon = "🌎"
     st.set_page_config(page_title=Settings.app_description, page_icon=icon, layout="wide")
     st.sidebar.title(f"{icon} {Settings.app_name}")
-    side = st.sidebar.selectbox("Please, choose a Report", ["Home", "Data Exploration", "Customer Segmentation"])
+    side = st.sidebar.selectbox(
+        "Please, choose a Report", ["Home", "Data Exploration", "Customer Segmentation", "Market Basket Analysis"]
+    )
 
-    for page in [customer_segmentation, data_exploration, home]:
+    for page in [customer_segmentation, data_exploration, home, market_basket_analysis]:
         page.maybe_initialize_session_state(st)
 
     df, code_by_country = _prepare_dataframe()
@@ -57,3 +59,6 @@ def customer_behaviour_app():
 
     elif side == "Customer Segmentation":
         customer_segmentation.render(st, df=df, code_by_country=code_by_country)
+
+    elif side == "Market Basket Analysis":
+        market_basket_analysis.render(st, df=df, code_by_country=code_by_country)
