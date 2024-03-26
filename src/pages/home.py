@@ -1,6 +1,10 @@
 from src.settings import Settings
 
 
+def maybe_prepare_data_on_disk(df):
+    pass
+
+
 def maybe_initialize_session_state(st):
     pass
 

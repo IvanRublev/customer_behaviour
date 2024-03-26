@@ -21,4 +21,4 @@ RUN ./clone_github_deps.sh
 RUN chmod +x migrate.sh
 
 # Run app.py when the container launches
-CMD ./migrate.sh && poetry run streamlit run app.py
+CMD ./migrate.sh && poetry run python prepare_data.py && poetry run streamlit run app.py

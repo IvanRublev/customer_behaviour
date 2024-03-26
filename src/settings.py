@@ -22,6 +22,7 @@ class Settings:
     plot_integer_format: str = ",d"
     plot_currency_format: str = "$,r"
     text_integer_format: str = "{:,d}"
+    prepared_data_path: str = "./prepared_data"
 
     # From pyproject.toml
 

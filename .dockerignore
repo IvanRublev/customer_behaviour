@@ -29,3 +29,6 @@ Makefile
 
 # Fly.io
 fly.toml
+
+# Data prepared during the first run
+/prepared_data

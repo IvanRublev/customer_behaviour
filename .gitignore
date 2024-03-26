@@ -47,3 +47,6 @@ build/
 
 # Environment variables
 .envrc
+
+# Data prepared during the first run
+/prepared_data

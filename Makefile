@@ -1,4 +1,4 @@
-.PHONY: deps lint shell migration migrate_current migrate_up migrate_down server test postgres_up postgres_down docker_up docker_down
+.PHONY: deps lint shell migration migrate_current migrate_up migrate_down server server_headless test postgres_up postgres_down docker_up docker_down
 
 deps:
 	poetry install
@@ -11,7 +11,10 @@ shell:
 	poetry run python
 
 server:
-	poetry run streamlit run app.py
+	poetry run python prepare_data.py && poetry run streamlit run app.py
+
+server_headless:
+	poetry run python prepare_data.py && poetry run streamlit run app.py --browser.serverAddress 0.0.0.0 --server.headless true
 
 migration:
 	if [ -z "$(m)" ]; then echo "Migration message is required. Use: make migration m='your message'"; exit 1; fi

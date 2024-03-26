@@ -6,6 +6,10 @@ from src.analysis.segmentation import k_means_centroids, rfm_scores, summarize_s
 from src.pages.components.sidebar import append_filters_title, country_filter, date_range_filter, enable_sidebar_filters
 
 
+def maybe_prepare_data_on_disk(df):
+    pass
+
+
 def maybe_initialize_session_state(st):
     pass
 

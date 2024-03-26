@@ -17,6 +17,10 @@ from src.reports_cache import get_cached_report, is_report_cached
 from src.settings import Settings
 
 
+def maybe_prepare_data_on_disk(df):
+    pass
+
+
 def maybe_initialize_session_state(st):
     if "filters_disabled" not in st.session_state:
         st.session_state["filters_disabled"] = True
@@ -106,7 +110,7 @@ def _users_by_country(df, code_by_country):
 @st.cache_data
 def _revenue_by_country(df, code_by_country):
     revenue_by_country = decode_countries(df, code_by_country)
-    revenue_by_country = revenue_by_country.groupby("Country")["TotalCost"].sum()
+    revenue_by_country = revenue_by_country.groupby("Country", observed=False)["TotalCost"].sum()
     # Convert the Series to a DataFrame
     revenue_by_country = revenue_by_country.reset_index()
     revenue_by_country.columns = ["Country", "Revenue"]

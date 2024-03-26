@@ -6,9 +6,11 @@ from src.logger import logger
 from src.settings import Settings
 from src.pages import customer_segmentation, data_exploration, home, market_basket_analysis
 
+PAGES = [customer_segmentation, data_exploration, home, market_basket_analysis]
+
 
 @st.cache_data
-def _prepare_dataframe():
+def prepare_dataframe():
     # Prepare the dataset
     df = pd.read_csv(Settings.dataset_csv_path)
 
@@ -46,10 +48,10 @@ def customer_behaviour_app():
         "Please, choose a Report", ["Home", "Data Exploration", "Customer Segmentation", "Market Basket Analysis"]
     )
 
-    for page in [customer_segmentation, data_exploration, home, market_basket_analysis]:
-        page.maybe_initialize_session_state(st)
+    df, code_by_country = prepare_dataframe()
 
-    df, code_by_country = _prepare_dataframe()
+    for page in PAGES:
+        page.maybe_initialize_session_state(st)
 
     if side == "Home":
         home.render(st)
