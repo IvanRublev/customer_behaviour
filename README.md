@@ -2,6 +2,15 @@
 
 You can play with the dashboard on https://customer-behaviour.fly.dev/
 
+In this project, we will analyze customer behavior using :
+* Exploratory Data Analysis
+* Customer Segmentation using RFM Analysis
+* Market Basket Analysis
+
+## Output and execution
+
+* Exploratory data analysis is cached after calculation at run time
+* Market basket analysis breakdowns are prepared and persisted to disk during application deployment
 
 ## How to run for local development
 

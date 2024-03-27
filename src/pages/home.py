@@ -1,7 +1,7 @@
 from src.settings import Settings
 
 
-def maybe_prepare_data_on_disk(df):
+def maybe_prepare_data_on_disk(df, code_by_country):
     pass
 
 

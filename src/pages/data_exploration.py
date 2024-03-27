@@ -17,7 +17,7 @@ from src.reports_cache import get_cached_report, is_report_cached
 from src.settings import Settings
 
 
-def maybe_prepare_data_on_disk(df):
+def maybe_prepare_data_on_disk(df, code_by_country):
     pass
 
 
@@ -44,8 +44,8 @@ cached: {is_report_cached(st.session_state, filter_key)}")
     charts_col1, charts_col2 = st.columns(2)
 
     with charts_col1:
-        users_by_country = _users_by_country(df, code_by_country)
-        fig = px.bar(users_by_country, x="Country", y="Users count", title="Users per Country")
+        customers_by_country = _customers_by_country(df, code_by_country)
+        fig = px.bar(customers_by_country, x="Country", y="Customers count", title="Customers per Country")
         fig.update_traces(yhoverformat=Settings.plot_integer_format)
         st.plotly_chart(fig, use_container_width=True)
 
@@ -98,13 +98,13 @@ cached: {is_report_cached(st.session_state, filter_key)}")
 
 
 @st.cache_data
-def _users_by_country(df, code_by_country):
-    users_by_country = decode_countries(df, code_by_country)
-    users_by_country = users_by_country["Country"].value_counts()
+def _customers_by_country(df, code_by_country):
+    customers_by_country = decode_countries(df, code_by_country)
+    customers_by_country = customers_by_country["Country"].value_counts()
     # Convert the Series to a DataFrame
-    users_by_country = users_by_country.reset_index()
-    users_by_country.columns = ["Country", "Users count"]
-    return users_by_country
+    customers_by_country = customers_by_country.reset_index()
+    customers_by_country.columns = ["Country", "Customers count"]
+    return customers_by_country
 
 
 @st.cache_data

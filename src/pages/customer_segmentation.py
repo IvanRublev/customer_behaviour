@@ -6,7 +6,7 @@ from src.analysis.segmentation import k_means_centroids, rfm_scores, summarize_s
 from src.pages.components.sidebar import append_filters_title, country_filter, date_range_filter, enable_sidebar_filters
 
 
-def maybe_prepare_data_on_disk(df):
+def maybe_prepare_data_on_disk(df, code_by_country):
     pass
 
 
@@ -134,11 +134,11 @@ def _rfm_tables(df, segments):
 
 
 def _apply_sidebar_filters(df, code_by_country):
+    df, _filter_key, dates = date_range_filter(df)
+    df, _filter_key, country, rejected_country = country_filter(df, code_by_country)
+
     st.sidebar.subheader("🍰 Segments count")
 
     segment_count = st.sidebar.selectbox("Select the number of segments you want to create:", [2, 3, 4, 5])
-
-    df, _filter_key, dates = date_range_filter(df)
-    df, _filter_key, country, rejected_country = country_filter(df, code_by_country)
 
     return df, segment_count, dates, country, rejected_country
