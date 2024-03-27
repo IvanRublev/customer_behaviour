@@ -72,6 +72,7 @@ def _write_csv_files(df, association_rules_file, transactions_stats_file, basket
         stock_code_by_invoice_id = reject_outliers_by_iqr(stock_code_by_invoice_id, "Basket Size")
 
         stock_code_len_counts = stock_code_by_invoice_id["Basket Size"].value_counts().sort_index(ascending=True)
+        stock_code_len_counts.name = "Transactions"
         stock_code_len_counts.to_csv(basket_sizes_file, index=True)
 
         transactions = list(stock_code_by_invoice_id["StockCode"])
@@ -230,11 +231,12 @@ def render(st, df, code_by_country):
         fig = px.histogram(
             scl,
             x="Basket Size",
-            y="count",
+            y="Transactions",
             nbins=30,
             title="Basket Size Distribution",
             range_x=[1, max(scl["Basket Size"]) + 1],
         )
+        fig.update_yaxes(title_text="Transactions")
         st.plotly_chart(fig, use_container_width=True)
 
     st.header("📊 Association Rules")
