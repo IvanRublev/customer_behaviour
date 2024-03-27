@@ -16,9 +16,11 @@ def maybe_initialize_session_state(st):
 
 def render(st, df, code_by_country):
     enable_sidebar_filters()
-    df, segment_count, dates, country = _apply_sidebar_filters(df, code_by_country)
+    df, segment_count, dates, country, rejected_country = _apply_sidebar_filters(df, code_by_country)
 
-    st.title(append_filters_title("Customer Segmentation", dates, country), anchor="customer-segmentation")
+    st.title(
+        append_filters_title("Customer Segmentation", dates, country, rejected_country), anchor="customer-segmentation"
+    )
 
     st.write("We use K-Means method to segment customers by normalized Recency Frequency and Monetary (RFM) values.")
 
@@ -137,6 +139,6 @@ def _apply_sidebar_filters(df, code_by_country):
     segment_count = st.sidebar.selectbox("Select the number of segments you want to create:", [2, 3, 4, 5])
 
     df, _filter_key, dates = date_range_filter(df)
-    df, _filter_key, country = country_filter(df, code_by_country)
+    df, _filter_key, country, rejected_country = country_filter(df, code_by_country)
 
-    return df, segment_count, dates, country
+    return df, segment_count, dates, country, rejected_country

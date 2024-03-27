@@ -29,9 +29,9 @@ def maybe_initialize_session_state(st):
 
 def render(st, df, code_by_country):
     # Apply filters
-    df, filter_key, dates, country = _apply_sidebar_filters(df, code_by_country)
+    df, filter_key, dates, country, rejected_country = _apply_sidebar_filters(df, code_by_country)
 
-    st.title(append_filters_title("Data Exploration", dates, country), anchor="data-exploration")
+    st.title(append_filters_title("Data Exploration", dates, country, rejected_country), anchor="data-exploration")
 
     logger.info(f"Data Exploration filter_key: {filter_key}, \
 cached: {is_report_cached(st.session_state, filter_key)}")
@@ -123,6 +123,6 @@ def _apply_sidebar_filters(df, code_by_country):
     filter_key = "data_exploration_"
 
     df, filter_key, dates = date_range_filter(df, filter_key)
-    df, filter_key, country = country_filter(df, code_by_country, filter_key)
+    df, filter_key, country, rejected_country = country_filter(df, code_by_country, filter_key)
 
-    return df, filter_key, dates, country
+    return df, filter_key, dates, country, rejected_country

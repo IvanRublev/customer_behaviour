@@ -121,9 +121,14 @@ def maybe_initialize_session_state(st):
 def render(st, df, code_by_country):
     enable_sidebar_filters()
     ar, antecendent_items, consequent_counts, ts, scl = _read_files()
-    ar, dates, country = _apply_sidebar_filters(ar, antecendent_items, consequent_counts, code_by_country)
+    ar, dates, country, rejected_country = _apply_sidebar_filters(
+        ar, antecendent_items, consequent_counts, code_by_country
+    )
 
-    st.title(append_filters_title("Market Basket Analysis", dates, country), anchor="market-basket-analysis")
+    st.title(
+        append_filters_title("Market Basket Analysis", dates, country, rejected_country),
+        anchor="market-basket-analysis",
+    )
 
     st.markdown("We use Apriori algorithm to find associations rules between products.")
 
@@ -202,10 +207,9 @@ def _apply_sidebar_filters(ar, antecendent_items, consequent_counts, code_by_cou
 
     ar = _filter_association_rules(ar, antcendent_item, consequents_number)
 
-    # df, _filter_key, dates = date_range_filter(df)
-    # df, _filter_key, country = country_filter(df, code_by_country)
+    # df, _filter_key, country, rejected_country = country_filter(df, code_by_country)
 
-    return ar, None, None
+    return ar, None, None, None
 
 
 def _read_files():

@@ -4,13 +4,14 @@ import streamlit as st
 from src.logger import logger
 
 
-def append_filters_title(title, dates, country):
+def append_filters_title(title, dates, country, rejected_country):
     """Appends the selected filters to the title.
 
     Args:
         title (str): The title to be appended to.
         dates (tuple): The date range.
         country (str): The selected country.
+        rejected_country (str): The rejected country (if any).
 
     Returns:
         str: The updated title.
@@ -21,6 +22,10 @@ def append_filters_title(title, dates, country):
 
     if country:
         title += f" for {country}"
+
+    if rejected_country:
+        title += " UK rejected"
+
     return title
 
 
@@ -49,7 +54,7 @@ def date_range_filter(df, filter_key=""):
 
     Args:
         df (pandas.DataFrame): The DataFrame to be filtered.
-        filter_key (str, optional): The filter key to be appended to. Defaults to "".
+        filter_key (str, optional): The filter cache key to be appended to. Defaults to "".
 
     Returns:
         tuple: A tuple containing the filtered DataFrame and the updated filter key.
@@ -96,15 +101,23 @@ def country_filter(df, code_by_country, filter_key=""):
     Args:
         df (pandas.DataFrame): The DataFrame to be filtered.
         code_by_country (dict): A dictionary mapping country names to country codes.
-        filter_key (str, optional): The filter key to be appended. Defaults to "".
+        filter_key (str, optional): The filter cache key to be appended. Defaults to "".
 
     Returns:
-        tuple: A tuple containing the filtered DataFrame, the updated filter key, and the selected country.
+        tuple: A tuple containing the filtered DataFrame, the updated filter key, the selected country, and the rejected country.
     """
 
     st.sidebar.subheader("🏠 Country Filter")
 
-    code_by_country = {f"{name} ({code})": code for name, code in code_by_country.items()}
+    uk_name = "United Kingdom"
+    uk_code = code_by_country[uk_name]
+    reject_uk = st.sidebar.toggle("Reject UK", True, disabled=st.session_state.filters_disabled)
+
+    code_by_country = {
+        f"{name} ({code})": code
+        for name, code in code_by_country.items()
+        if not reject_uk or (reject_uk and name != uk_name)
+    }
     code_by_country = {**code_by_country, "None": None}
     countries_list = list(code_by_country.keys())
     countries_list.remove("None")
@@ -117,19 +130,29 @@ def country_filter(df, code_by_country, filter_key=""):
     logger.info(f"Country: {country}")
 
     country_code = code_by_country[country]
-    if country_code:
-        df = _do_filter_by_country_code(df, country_code)
+    reject_code = uk_code if reject_uk and not country_code else None
+    df = _do_filter_by_country_code(df, country_code, reject_code)
 
     logger.info(f"Country code: {country_code}")
 
     filter_key += f"_country{country_code}_" if country_code else ""
+    filter_key += f"_rejected_country{reject_code}_" if reject_code else ""
 
+    # Prepare titles
     if country == "None":
         country = None
 
-    return df, filter_key, country
+    rejected_country = uk_name if reject_code else None
+
+    return df, filter_key, country, rejected_country
 
 
 @st.cache_data
-def _do_filter_by_country_code(df, country_code):
-    return df[df["Country"] == country_code]
+def _do_filter_by_country_code(df, country_code, reject_country_code):
+    if country_code:
+        df = df[df["Country"] == country_code]
+
+    if reject_country_code:
+        df = df[df["Country"] != reject_country_code]
+
+    return df
