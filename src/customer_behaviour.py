@@ -14,6 +14,8 @@ def prepare_dataframe():
     # Prepare the dataset
     df = pd.read_csv(Settings.dataset_csv_path)
 
+    # df = df.drop("index", axis=1)
+
     df["Invoice ID"] = df["Invoice"]
     df = df.drop("Invoice", axis=1)
 
@@ -33,7 +35,7 @@ def prepare_dataframe():
     df = df.sort_values("InvoiceDate")
 
     df = reject_outliers_by_iqr(df, "TotalCost")
-
+    
     return df.copy(), code_by_country
 
 
