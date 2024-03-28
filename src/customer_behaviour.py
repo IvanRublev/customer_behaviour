@@ -10,21 +10,30 @@ PAGES = [customer_segmentation, data_exploration, home, market_basket_analysis]
 
 
 @st.cache_data
-def prepare_dataframe():
+def _prepare_dataframe():
+    return do_prepare_dataframe()
+
+
+def do_prepare_dataframe(csv_path=Settings.dataset_csv_path):
     # Prepare the dataset
-    df = pd.read_csv(Settings.dataset_csv_path)
-
-    # df = df.drop("index", axis=1)
-
-    df["Invoice ID"] = df["Invoice"]
-    df = df.drop("Invoice", axis=1)
-
-    df["TotalCost"] = df["Quantity"] * df["Price"]
+    df = pd.read_csv(csv_path)
 
     df = df.dropna()
     df = df.drop(df[df["Quantity"] <= 0].index)
-
     df = df.drop_duplicates()
+
+    df.rename(
+        {
+            "Invoice": "Invoice ID",
+            "StockCode": "Stock Code",
+            "Description": "Stock Description",
+            "InvoiceDate": "Invoice Date",
+        },
+        axis=1,
+        inplace=True,
+    )
+
+    df["Total Cost"] = df["Quantity"] * df["Price"]
 
     # we encode the countries to a numerical value to prevent correlation analysis crash
     df, code_by_country = encode_countries(df)
@@ -32,11 +41,11 @@ def prepare_dataframe():
     df = cast_column_types(df)
 
     # sort for time series analysis
-    df = df.sort_values("InvoiceDate")
+    df = df.sort_values("Invoice Date")
 
-    df = reject_outliers_by_iqr(df, "TotalCost")
-    
-    return df.copy(), code_by_country
+    df = reject_outliers_by_iqr(df, "Total Cost")
+
+    return df, code_by_country
 
 
 def customer_behaviour_app():
@@ -53,7 +62,7 @@ def customer_behaviour_app():
     if side != "Home":
         st.sidebar.markdown("---")
 
-    df, code_by_country = prepare_dataframe()
+    df, code_by_country = _prepare_dataframe()
 
     for page in PAGES:
         page.maybe_initialize_session_state(st)

@@ -11,10 +11,10 @@ def test_cast_column_types_pass_when_return_columns_with_appropriate_types():
     df = cast_column_types(df)
 
     assert isinstance(df["Invoice ID"].dtype, pd.CategoricalDtype)
-    assert isinstance(df["StockCode"].dtype, pd.CategoricalDtype)
-    assert isinstance(df["Description"].dtype, pd.StringDtype)
+    assert isinstance(df["Stock Code"].dtype, pd.CategoricalDtype)
+    assert isinstance(df["Stock Description"].dtype, pd.StringDtype)
     assert isinstance(df["Quantity"].dtype, pd.Int64Dtype)
-    assert types.is_datetime64_dtype(df["InvoiceDate"].dtype)
+    assert types.is_datetime64_dtype(df["Invoice Date"].dtype)
     assert isinstance(df["Price"].dtype, pd.Float64Dtype)
     assert isinstance(df["Customer ID"].dtype, pd.Float64Dtype)  # manually casted
     assert isinstance(df["Country"].dtype, pd.CategoricalDtype)

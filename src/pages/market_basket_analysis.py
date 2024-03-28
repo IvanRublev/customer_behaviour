@@ -4,7 +4,9 @@ import re
 
 from apyori import apriori
 import pandas as pd
+
 import plotly.express as px
+from plotly.graph_objs import Scatter
 import streamlit as st
 
 from src.dataframe.preprocess import reject_outliers_by_iqr
@@ -61,24 +63,35 @@ def _write_csv_files(df, association_rules_file, transactions_stats_file, basket
     if not os.path.isfile(association_rules_file) or (
         os.path.getmtime(association_rules_file) <= os.path.getmtime(Settings.dataset_csv_path)
     ):
-        description_by_stock_code = df.groupby("StockCode", observed=True)["Description"].first()
+        description_by_stock_code = df.groupby("Stock Code", observed=True)["Stock Description"].first()
 
-        stock_code_by_invoice_id = (
-            df.groupby("Invoice ID", observed=True)["StockCode"].apply(list).apply(sorted).reset_index()
+        group_by_invoice_id = (
+            df.groupby("Invoice ID", observed=True)
+            .agg({"Stock Code": lambda x: sorted(list(x)), "Total Cost": "sum"})
+            .reset_index()
         )
-        stock_code_by_invoice_id["Basket Size"] = stock_code_by_invoice_id["StockCode"].apply(len)
+
+        group_by_invoice_id["Basket Size"] = group_by_invoice_id["Stock Code"].apply(len)
 
         # Reject outliers
-        stock_code_by_invoice_id = reject_outliers_by_iqr(stock_code_by_invoice_id, "Basket Size")
+        group_by_invoice_id = reject_outliers_by_iqr(group_by_invoice_id, "Basket Size")
 
-        stock_code_len_counts = stock_code_by_invoice_id["Basket Size"].value_counts().sort_index(ascending=True)
-        stock_code_len_counts.name = "Transactions"
-        stock_code_len_counts.to_csv(basket_sizes_file, index=True)
+        # write transactions per basket size
+        trpbs = group_by_invoice_id.groupby("Basket Size", observed=True).agg(
+            {"Total Cost": "median", "Invoice ID": "count"}
+        )
+        trpbs.loc[:, "Total Cost"] = trpbs.loc[:, "Total Cost"].round(2)
+        trpbs.rename(columns={"Total Cost": "Median Total Cost", "Invoice ID": "Transactions"}, inplace=True)
+        # trpbs = group_by_invoice_id["Basket Size"].value_counts().sort_index(ascending=True)
+        # trpbs.name = "Transactions"
+        trpbs.to_csv(basket_sizes_file, index=True)
 
-        transactions = list(stock_code_by_invoice_id["StockCode"])
+        transactions = list(group_by_invoice_id["Stock Code"])
         transactions_count = len(transactions)
-        transaction_stats = pd.DataFrame([transactions_count], columns=["Transactions Count"])
-        transaction_stats.to_csv(transactions_stats_file, index=False)
+
+        # write transactions stats
+        ts = pd.DataFrame([transactions_count], columns=["Transactions Count"])
+        ts.to_csv(transactions_stats_file, index=False)
 
         # Apriori works not well on low amount of transactions
         if transactions_count <= 10:
@@ -191,7 +204,7 @@ def render(st, df, code_by_country):
         df, code_by_country
     )
     # read filtered data for specific country if any
-    ar, antecendent_items, consequent_counts, ts, scl = _read_csv_files(
+    ar, antecendent_items, consequent_counts, ts, trpbs = _read_csv_files(
         *_file_names(country_filter_key("", country_code, rejected_country_code))
     )
     antcendent_item, consequents_number = _initialize_rules_sidebar_filters(antecendent_items, consequent_counts)
@@ -229,14 +242,15 @@ def render(st, df, code_by_country):
 
     with col2:
         fig = px.histogram(
-            scl,
+            trpbs,
             x="Basket Size",
             y="Transactions",
             nbins=30,
             title="Basket Size Distribution",
-            range_x=[1, max(scl["Basket Size"]) + 1],
+            range_x=[1, max(trpbs["Basket Size"]) + 1],
         )
-        fig.update_yaxes(title_text="Transactions")
+        fig.add_trace(Scatter(x=trpbs.index, y=trpbs["Median Total Cost"], name="Median Total Cost", yaxis="y2"))
+        fig.update_layout(yaxis2=dict(title="Median Total Cost", overlaying="y", side="right"))
         st.plotly_chart(fig, use_container_width=True)
 
     st.header("📊 Association Rules")
@@ -349,9 +363,9 @@ def _read_csv_files(association_rules_file, transactions_stats_file, basket_size
 
     ts = pd.read_csv(transactions_stats_file)
 
-    scl = pd.read_csv(basket_sizes_file)
+    trpbs = pd.read_csv(basket_sizes_file)
 
-    return ar, antecendent_items, consequent_counts, ts, scl
+    return ar, antecendent_items, consequent_counts, ts, trpbs
 
 
 @st.cache_data

@@ -62,7 +62,7 @@ def date_range_filter(df, filter_key=""):
 
     st.sidebar.subheader("📅 Date Range")
 
-    min_date, max_date = df.InvoiceDate.dt.date.min(), df.InvoiceDate.dt.date.max()
+    min_date, max_date = df["Invoice Date"].dt.date.min(), df["Invoice Date"].dt.date.max()
     date = st.sidebar.date_input(
         "Select your date range",
         (min_date, max_date),
@@ -92,7 +92,7 @@ our dataset record the transaction between {min_date} to {max_date}",
 
 @st.cache_data
 def do_filter_by_date(df, date):
-    return df[(df["InvoiceDate"] >= pd.to_datetime(date[0])) & (df["InvoiceDate"] <= pd.to_datetime(date[1]))]
+    return df[(df["Invoice Date"] >= pd.to_datetime(date[0])) & (df["Invoice Date"] <= pd.to_datetime(date[1]))]
 
 
 def country_filter(df, code_by_country, filter_key=""):

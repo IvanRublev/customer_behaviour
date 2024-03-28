@@ -7,9 +7,9 @@ from unit_tests.conftest import build_dataframe
 def test_rfm_scores_pass_when_returns_recency_frequency_and_monetary_statistics():
     df = build_dataframe(3)
     df["Customer ID"] = [100, 100, 200]
-    df["InvoiceDate"] = pd.to_datetime(["2021-01-01", "2021-01-02", "2021-01-03"])
+    df["Invoice Date"] = pd.to_datetime(["2021-01-01", "2021-01-02", "2021-01-03"])
     df["Invoice ID"] = [1, 7, 12]
-    df["TotalCost"] = [11, 25, 30]
+    df["Total Cost"] = [11, 25, 30]
 
     expected_stats = pd.DataFrame(
         [

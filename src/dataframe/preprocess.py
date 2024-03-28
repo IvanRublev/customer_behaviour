@@ -11,10 +11,10 @@ def cast_column_types(df):
         pd.DataFrame: The processed DataFrame with updated column types.
     """
     df["Invoice ID"] = pd.Categorical(df["Invoice ID"])
-    df["StockCode"] = pd.Categorical(df["StockCode"])
-    df["Description"] = df["Description"].astype("string")
+    df["Stock Code"] = pd.Categorical(df["Stock Code"])
+    df["Stock Description"] = df["Stock Description"].astype("string")
     df["Quantity"] = df["Quantity"].astype("Int64")
-    df["InvoiceDate"] = pd.to_datetime(df["InvoiceDate"])
+    df["Invoice Date"] = pd.to_datetime(df["Invoice Date"])
     df["Price"] = df["Price"].astype("Float64")
     df["Customer ID"] = df["Customer ID"].astype("Float64")
     df["Country"] = pd.Categorical(df["Country"])
@@ -34,9 +34,8 @@ def encode_countries(df):
     """
 
     code_by_country = {country: code + 1 for code, country in enumerate(df["Country"].unique())}
-    df["Country"] = df["Country"].map(code_by_country)
+    df.loc[:, "Country"] = df.loc[:, "Country"].map(code_by_country)
     df["Country"] = pd.Categorical(df["Country"])
-
     return df, code_by_country
 
 
@@ -52,7 +51,9 @@ def decode_countries(df, code_by_country):
     """
 
     country_by_code = {code: f"{country} ({code})" for country, code in code_by_country.items()}
-    df["Country"] = df["Country"].map(country_by_code)
+    df.loc[:, "CountryStr"] = pd.Categorical(df.loc[:, "Country"].map(country_by_code))
+    df.drop("Country", axis=1, inplace=True)
+    df.rename(columns={"CountryStr": "Country"}, inplace=True)
 
     return df
 

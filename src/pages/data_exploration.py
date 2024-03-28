@@ -69,7 +69,6 @@ cached: {is_report_cached(st.session_state, filter_key)}")
             tsmode=True,
             # Setting what variables are time series
             type_schema={
-                "TotalCost": "timeseries",
                 "Quantity": "timeseries",
             },
             missing_diagrams={
@@ -77,14 +76,8 @@ cached: {is_report_cached(st.session_state, filter_key)}")
                 "matrix": False,
                 "heatmap": False,
             },
-            correlations={
-                "auto": {"calculate": True},
-                "pearson": {"calculate": False},
-                "spearman": {"calculate": False},
-                "kendall": {"calculate": False},
-                "phi_k": {"calculate": True},
-                "cramers": {"calculate": False},
-            },
+            correlations=None,
+            interactions=None,
         ),
     )
 
@@ -99,20 +92,18 @@ cached: {is_report_cached(st.session_state, filter_key)}")
 
 @st.cache_data
 def _customers_by_country(df, code_by_country):
-    customers_by_country = decode_countries(df, code_by_country)
-    customers_by_country = customers_by_country["Country"].value_counts()
-    # Convert the Series to a DataFrame
-    customers_by_country = customers_by_country.reset_index()
-    customers_by_country.columns = ["Country", "Customers count"]
+    customers_by_country = decode_countries(df.copy(), code_by_country)
+    customers_by_country = (
+        customers_by_country.groupby("Country", observed=True).agg({"Customer ID": lambda x: x.nunique()}).reset_index()
+    )
+    customers_by_country.rename(columns={"Customer ID": "Customers count"}, inplace=True)
     return customers_by_country
 
 
 @st.cache_data
 def _revenue_by_country(df, code_by_country):
-    revenue_by_country = decode_countries(df, code_by_country)
-    revenue_by_country = revenue_by_country.groupby("Country", observed=True)["TotalCost"].sum()
-    # Convert the Series to a DataFrame
-    revenue_by_country = revenue_by_country.reset_index()
+    revenue_by_country = decode_countries(df.copy(), code_by_country)
+    revenue_by_country = revenue_by_country.groupby("Country", observed=True)["Total Cost"].sum().reset_index()
     revenue_by_country.columns = ["Country", "Revenue"]
     return revenue_by_country
 

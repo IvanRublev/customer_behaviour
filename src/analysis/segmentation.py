@@ -17,20 +17,20 @@ def rfm_scores(df):
         pandas.DataFrame: The RFM statistics table.
     """
 
-    snapshot_date = df["InvoiceDate"].max()
+    snapshot_date = df["Invoice Date"].max()
 
     rfm = (
         df.groupby("Customer ID", observed=True)
         .agg(
             {
-                "InvoiceDate": lambda dates: (snapshot_date - dates.max()).days,
+                "Invoice Date": lambda dates: (snapshot_date - dates.max()).days,
                 "Invoice ID": lambda invoice_ids: invoice_ids.nunique(),
-                "TotalCost": lambda total_cost: total_cost.sum(),
+                "Total Cost": lambda total_cost: total_cost.sum(),
             }
         )
         .reset_index()
     )
-    rfm.rename(columns={"InvoiceDate": "Recency", "Invoice ID": "Frequency", "TotalCost": "Monetary"}, inplace=True)
+    rfm.rename(columns={"Invoice Date": "Recency", "Invoice ID": "Frequency", "Total Cost": "Monetary"}, inplace=True)
     rfm["Recency"] = rfm["Recency"].astype(int)
 
     return rfm
