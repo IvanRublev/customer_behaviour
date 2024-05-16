@@ -1,6 +1,6 @@
 import pandas as pd
 
-from src.customer_behaviour import do_prepare_dataframe
+from src.dataframe.preprocess import do_prepare_dataframe
 
 # fixtures for database
 

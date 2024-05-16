@@ -1,4 +1,5 @@
-from src.customer_behaviour import do_prepare_dataframe, PAGES
+from src.dataframe.preprocess import do_prepare_dataframe
+from src.customer_behaviour import PAGES
 from src.logger import logger
 
 
