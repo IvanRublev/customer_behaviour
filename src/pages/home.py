@@ -14,6 +14,8 @@ def render(st):
 
     dataset_link = "[Online Retail II dataset](https://archive.ics.uci.edu/dataset/502/online+retail+ii)"
     st.markdown("""
+                The complete source code of this project is on [GitHub](https://github.com/IvanRublev/customer_behaviour).
+
                 In this project, we will analyze customer behavior using :
                 * Exploratory Data Analysis
                 * Customer Segmentation using RFM Analysis
