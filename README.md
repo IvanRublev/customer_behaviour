@@ -1,7 +1,5 @@
 # Customer Trends
 
-You can play with the dashboard on https://customer-behaviour.fly.dev/
-
 In this project, we will analyze customer behavior using :
 * Exploratory Data Analysis
 * Customer Segmentation using RFM Analysis
